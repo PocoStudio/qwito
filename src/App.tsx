@@ -13,7 +13,6 @@ import PanelHome from './pages/panel/PanelHome';
 import ChannelsHome from './pages/panel/channels/ChannelsHome';
 import ChannelView from './pages/panel/channels/ChannelView';
 import NewChannel from './pages/panel/channels/NewChannel';
-import InvitationsView from './pages/panel/invitations/InvitationsView';
 import SettingsView from './pages/panel/settings/SettingsView';
 import SettingsChannel from './pages/panel/settings/SettingsChannel';
 import InvitationsList from './pages/panel/invitations/InvitationsList';

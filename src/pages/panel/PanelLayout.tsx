@@ -86,7 +86,7 @@ function PanelLayoutContent() {
   const { state } = useSidebar();
   const { user, loading: authLoading } = useAuth();
   const [channels, setChannels] = useState<Channel[]>([]);
-  const [loadingChannels, setLoadingChannels] = useState(true);
+  const [_loadingChannels, setLoadingChannels] = useState(true);
   const [invitationCount, setInvitationCount] = useState(0);
   
   useEffect(() => {

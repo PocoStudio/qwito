@@ -6,7 +6,7 @@ import { getUserInvitations } from "@/services/invitationService";
 function PanelHome() {
   const navigate = useNavigate();
   const [invitationCount, setInvitationCount] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [_loading, setLoading] = useState(true);
   
   useEffect(() => {
     const fetchInvitations = async () => {
