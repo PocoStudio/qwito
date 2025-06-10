@@ -64,7 +64,7 @@ function Login() {
   const handleGoogleLogin = () => {
     setIsGoogleLoading(true);
     setTimeout(() => {
-      window.location.href = `${API_BASE_URL}/api/auth/google`;
+      window.location.href = `https://api.capiomont.fr/api/auth/google`;
     }, 500); // Délai de 0.5 secondes avant la redirection
   };
   
