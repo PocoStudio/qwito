@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Talk - Redirection</title>
+  <script>
+    // Fonction pour analyser les paramètres de l'URL
+    function getQueryParams() {
+      const params = {};
+      window.location.search.substring(1).split('&').forEach(pair => {
+        const [key, value] = pair.split('=');
+        if (key) params[key] = decodeURIComponent(value || '');
+      });
+      return params;
+    }
+
+    // Fonction principale de redirection
+    (function() {
+      // Si nous sommes déjà sur la page 404.html, récupérer le chemin depuis sessionStorage
+      const pathname = sessionStorage.getItem('redirect') || '/';
+      
+      // Si nous avons un chemin sauvegardé, rediriger vers l'application principale
+      if (pathname !== '/') {
+        sessionStorage.removeItem('redirect');
+        window.location.href = '/' + pathname;
+      } else {
+        // Si nous arrivons directement sur une URL, sauvegarder le chemin et rediriger
+        const path = window.location.pathname.replace(/^\//, '');
+        sessionStorage.setItem('redirect', path);
+        window.location.replace('/');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <h1>Redirection en cours...</h1>
+  <p>Si vous n'êtes pas redirigé automatiquement, <a href="/">cliquez ici</a>.</p>
+</body>
+</html>
