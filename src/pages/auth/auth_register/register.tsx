@@ -424,7 +424,7 @@ function Register() {
             <div className="text-center">
               <h1 className="text-3xl font-bold text-foreground">Créer un compte</h1>
               <p className="mt-2 text-sm text-muted-foreground">
-                Inscrivez-vous pour accéder à toutes les fonctionnalités
+                Inscrivez-vous pour accéder à toutes les fonctionnalités !
               </p>
             </div>
             
