@@ -17,16 +17,20 @@
     // Fonction principale de redirection
     (function() {
       // Si nous sommes déjà sur la page 404.html, récupérer le chemin depuis sessionStorage
-      const pathname = sessionStorage.getItem('redirect') || '/';
+      const pathname = sessionStorage.getItem('redirectPath') || '/';
+      const queryString = sessionStorage.getItem('redirectQuery') || '';
       
       // Si nous avons un chemin sauvegardé, rediriger vers l'application principale
       if (pathname !== '/') {
-        sessionStorage.removeItem('redirect');
-        window.location.href = '/' + pathname;
+        sessionStorage.removeItem('redirectPath');
+        sessionStorage.removeItem('redirectQuery');
+        window.location.href = '/' + pathname + queryString;
       } else {
-        // Si nous arrivons directement sur une URL, sauvegarder le chemin et rediriger
-        const path = window.location.pathname.replace(/^\//, '');
-        sessionStorage.setItem('redirect', path);
+        // Si nous arrivons directement sur une URL, sauvegarder le chemin et les paramètres, puis rediriger
+        const path = window.location.pathname.replace(/^\//,'');
+        const query = window.location.search;
+        sessionStorage.setItem('redirectPath', path);
+        sessionStorage.setItem('redirectQuery', query);
         window.location.replace('/');
       }
     })();
