@@ -4,57 +4,46 @@
   <meta charset="utf-8">
   <title>Talk - Redirection</title>
   <script>
-    // Script de redirection spécifique pour GitHub Pages
+    // Solution spécifique pour React + GitHub Pages
     (function() {
-      // Récupérer le chemin complet (sans le domaine)
-      const segment = window.location.pathname.split('/').filter(p => p);
-      const path = segment.join('/');
-      
-      // Récupérer tous les paramètres de l'URL
-      const query = window.location.search;
-      
-      // Récupérer le hash (important pour les SPA et les tokens)
-      const hash = window.location.hash;
-      
-      // Vérifier si nous sommes sur la page 404.html
-      if (window.location.pathname.includes('404.html')) {
-        // Nous sommes sur la page 404.html, récupérer les informations depuis sessionStorage
-        const redirectPath = sessionStorage.getItem('redirectPath');
-        const redirectQuery = sessionStorage.getItem('redirectQuery') || '';
-        const redirectHash = sessionStorage.getItem('redirectHash') || '';
-        
-        if (redirectPath) {
-          // Nettoyer le sessionStorage
-          sessionStorage.removeItem('redirectPath');
-          sessionStorage.removeItem('redirectQuery');
-          sessionStorage.removeItem('redirectHash');
-          
-          // Construire l'URL complète avec tous les paramètres
-          const redirectUrl = '/' + redirectPath + redirectQuery + redirectHash;
-          
-          // Rediriger vers l'URL complète
-          window.location.href = redirectUrl;
-        } else {
-          // Si aucun chemin n'est sauvegardé, rediriger vers l'accueil
-          window.location.href = '/';
-        }
-      } else {
-        // Nous sommes arrivés sur une URL qui n'existe pas
-        // Sauvegarder le chemin, les paramètres et le hash avant la redirection
-        if (path && !path.includes('404.html')) {
-          sessionStorage.setItem('redirectPath', path);
-          sessionStorage.setItem('redirectQuery', query);
-          sessionStorage.setItem('redirectHash', hash);
-          
-          // Pour GitHub Pages, nous devons utiliser une redirection relative
-          // à la racine du site pour que cela fonctionne correctement
-          const rootPath = window.location.origin + '/';
-          window.location.replace(rootPath + '404.html');
-        } else {
-          // Si nous sommes déjà à la racine, simplement charger la page d'accueil
-          window.location.replace('/');
-        }
+      // Ne pas exécuter la redirection si nous sommes déjà sur la page 404.html
+      // et que nous venons d'être redirigés (pour éviter les boucles)
+      if (sessionStorage.getItem('isRedirecting') === 'true') {
+        sessionStorage.removeItem('isRedirecting');
+        return;
       }
+
+      // Récupérer l'URL complète actuelle
+      const location = window.location;
+      const pathname = location.pathname;
+      
+      // Si nous sommes sur la page 404.html, ne rien faire
+      if (pathname.endsWith('404.html')) {
+        return;
+      }
+      
+      // Construire l'URL pour l'application React
+      // Enlever le premier slash pour éviter les problèmes avec GitHub Pages
+      const cleanPath = pathname.replace(/^\//, '');
+      
+      // Sauvegarder tous les éléments de l'URL
+      const redirectPath = cleanPath || '';
+      const redirectSearch = location.search || '';
+      const redirectHash = location.hash || '';
+      
+      // Stocker ces informations dans sessionStorage
+      sessionStorage.setItem('redirectPath', redirectPath);
+      sessionStorage.setItem('redirectSearch', redirectSearch);
+      sessionStorage.setItem('redirectHash', redirectHash);
+      sessionStorage.setItem('isRedirecting', 'true');
+      
+      // Rediriger vers la racine de l'application React
+      // Pour GitHub Pages, nous utilisons une URL relative
+      const segmentCount = cleanPath.split('/').length;
+      const rootPath = Array(segmentCount).fill('..').join('/') || '.';
+      
+      // Rediriger vers l'index.html à la racine
+      window.location.replace(rootPath);
     })();
   </script>
 </head>

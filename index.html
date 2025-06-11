@@ -6,13 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Talk</title>
     <script>
-      // Vérifier si nous avons un chemin sauvegardé dans sessionStorage
+      // Script pour gérer les redirections depuis 404.html
       (function() {
-        const redirect = sessionStorage.getItem('redirect');
-        if (redirect && redirect !== window.location.pathname) {
-          sessionStorage.removeItem('redirect');
+        // Récupérer les informations de redirection
+        const redirectPath = sessionStorage.getItem('redirectPath');
+        const redirectSearch = sessionStorage.getItem('redirectSearch');
+        const redirectHash = sessionStorage.getItem('redirectHash');
+        
+        // Si nous avons des informations de redirection
+        if (redirectPath || redirectSearch || redirectHash) {
+          // Construire l'URL complète
+          const newUrl = '/' + 
+            (redirectPath || '') + 
+            (redirectSearch || '') + 
+            (redirectHash || '');
+          
+          // Nettoyer le sessionStorage
+          sessionStorage.removeItem('redirectPath');
+          sessionStorage.removeItem('redirectSearch');
+          sessionStorage.removeItem('redirectHash');
+          sessionStorage.removeItem('isRedirecting');
+          
           // Utiliser history.replaceState pour changer l'URL sans recharger la page
-          history.replaceState(null, null, redirect);
+          history.replaceState(null, null, newUrl);
         }
       })();
     </script>
