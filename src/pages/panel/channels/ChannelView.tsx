@@ -21,6 +21,7 @@ import { Progress } from "@/components/ui/progress";
 import { MoreVertical, Trash2 } from "lucide-react";
 import { deleteMessage as deleteSocketMessage } from "@/services/socketService";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Define interfaces for our data structures
 interface Message {
@@ -56,10 +57,13 @@ interface MessageResponse {
   files?: MessageFile[];
 }
 
+
+
 function ChannelView() {
   const navigate = useNavigate();
   const { channelId } = useParams<{ channelId: string }>();
   const [messages, setMessages] = useState<Message[]>([]);
+  const isMobile = useIsMobile();
   const [newMessage, setNewMessage] = useState("");
   // Ajout de l'état pour le sélecteur d'emoji
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -126,9 +130,14 @@ function ChannelView() {
 
   const [fileProgress, setFileProgress] = useState<{ [key: string]: number }>({});
   
-  // Fonction pour défiler vers le dernier message
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (isMobile) {
+      // Sur mobile, on utilise scrollIntoView avec alignToTop pour éviter de descendre trop bas
+      messagesEndRef.current?.scrollIntoView({ block: "end", inline: "nearest" });
+    } else {
+      // Sur desktop, on garde le comportement actuel
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
   };
   
   // Fonction pour charger les messages initiaux
@@ -517,11 +526,14 @@ function ChannelView() {
   }
   
   return (
-    <div className="flex flex-col overflow-hidden" style={{ height: 'calc(100vh - 110px)' }}>
+    <div className="flex flex-col overflow-hidden" style={{ height: isMobile ? 'calc(100vh - 60px)' : 'calc(100vh - 110px)' }}>
       {/* Header fixe en haut */}
       <div className="flex-shrink-0 border-b p-3 bg-background rounded-lg z-10">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold">#{channelInfo.name}</h1>
+          <h1 className="text-2xl font-bold">#{isMobile && channelInfo.name.length > 6 
+            ? `${channelInfo.name.substring(0, 6)}...` 
+            : channelInfo.name}
+          </h1>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1 text-muted-foreground">
               <Users className="h-4 w-4" />
@@ -531,7 +543,9 @@ function ChannelView() {
             {userOptions.showStatus === "true" && (
               <div className={`flex items-center gap-1 ${isSocketConnected ? 'text-green-500' : 'text-red-500'}`}>
                 <div className={`h-2 w-2 rounded-full ${isSocketConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                <span className="text-xs">{isSocketConnected ? 'Connecté' : 'Déconnecté'}</span>
+                {!isMobile && (
+                  <span className="text-xs">{isSocketConnected ? 'Connecté' : 'Déconnecté'}</span>
+                )}
               </div>
             )}
             <button 
@@ -745,7 +759,7 @@ function ChannelView() {
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Écrivez votre message... "
-                className="flex w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 flex-1 h-10 resize-none overflow-hidden"
+                className={`flex w-full rounded-lg border border-input bg-background px-3 ${isMobile ? 'py-1' : 'py-2'} text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 flex-1 ${isMobile ? 'h-8' : 'h-10'} resize-none overflow-hidden pr-16`}
                 rows={1}
               />
               <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
@@ -767,14 +781,23 @@ function ChannelView() {
                 </button>
               </div>
               {showEmojiPicker && (
-                <div className="absolute bottom-full right-0 mb-2 z-10 shadow-lg rounded-lg overflow-hidden">
-                  <EmojiPicker onEmojiClick={handleEmojiClick} />
+                <div className={`absolute ${isMobile ? 'bottom-12 right-0 max-w-[90vw] max-h-[40vh]' : 'bottom-full right-0 mb-2'} z-10 shadow-lg rounded-lg overflow-hidden`}>
+                <div className={isMobile ? 'scale-75 origin-bottom-right' : ''}>
+                  <EmojiPicker 
+                    onEmojiClick={handleEmojiClick} 
+                    lazyLoadEmojis={true}
+                    searchDisabled={isMobile}
+                    skinTonesDisabled={isMobile}
+                    width={isMobile ? 280 : 320}
+                    height={isMobile ? 320 : 400}
+                  />
                 </div>
+              </div>
               )}
             </div>
             <button 
               type="submit"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center rounded-lg text-sm font-medium ring-offset-background transition-colors h-10 px-4 py-2"
+              className={`bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center rounded-lg text-sm font-medium ring-offset-background transition-colors ${isMobile ? 'h-8 px-3' : 'h-10 px-4'} py-2`}
               disabled={uploadingFiles}
             >
               {uploadingFiles ? (

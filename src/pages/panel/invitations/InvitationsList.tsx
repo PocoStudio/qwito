@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { getUserInvitations, respondToInvitation } from "@/services/invitationService";
 import { Check, X } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Définition de l'interface pour les invitations
 interface Invitation {
@@ -16,6 +17,7 @@ function InvitationsList() {
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const isMobile = useIsMobile();
   
   useEffect(() => {
     const fetchInvitations = async () => {
@@ -58,7 +60,7 @@ function InvitationsList() {
   }
   
   return (
-    <div className="space-y-6">
+    <div className={`${isMobile ? 'space-y-6 p-5' : 'space-y-6'}`}>
       <div>
         <h1 className="text-3xl font-bold">Invitations</h1>
         <p className="text-muted-foreground mt-2">Gérez vos invitations aux salons de discussion</p>

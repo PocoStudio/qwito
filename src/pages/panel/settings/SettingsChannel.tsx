@@ -8,6 +8,7 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useAuth } from "@/hooks/useAuth";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Member {
   uniqueid: string;
@@ -27,7 +28,8 @@ interface ChannelDetails {
 function SettingsChannel() {
   const { channelId } = useParams<{ channelId: string }>();
   const navigate = useNavigate();
-  const { user } = useAuth(); // Utiliser le hook useAuth
+  const { user } = useAuth();
+  const isMobile = useIsMobile();
   
   const [channel, setChannel] = useState<ChannelDetails | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
@@ -242,8 +244,8 @@ function SettingsChannel() {
   }
   
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-8">
-      <div className="flex items-center justify-between">
+    <div className={`${isMobile ? 'max-w-none mx-1' : 'max-w-4xl mx-auto'} ${isMobile ? 'p-2' : 'p-6'} space-y-8`}>
+      <div className={`flex ${isMobile ? 'flex-col gap-3' : 'items-center justify-between'}`}>
         <h1 className="text-3xl font-bold">Paramètres du salon</h1>
         <Button variant="outline" onClick={() => navigate(`/panel/channels/${channelId}`)}>
           Retour au salon
@@ -308,11 +310,11 @@ function SettingsChannel() {
       </div>
       
       <div className="bg-white rounded-lg border p-6 shadow-sm">
-        <div className="flex items-center justify-between mb-6">
+        <div className={`${isMobile ? 'flex flex-col gap-4' : 'flex items-center justify-between'} mb-6`}>
           <h2 className="text-2xl font-semibold">Membres ({members.length})</h2>
           
           {(isOwner || userRole === 'admin') && (
-            <form onSubmit={handleInviteMember} className="flex items-center gap-2">
+            <form onSubmit={handleInviteMember} className={`flex ${isMobile ? 'flex-col w-full' : 'items-center'} gap-2`}>
               <input
                 type="text"
                 value={newMemberUsername}
@@ -323,7 +325,7 @@ function SettingsChannel() {
                 placeholder="Nom d'utilisateur"
                 className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               />
-              <Button type="submit" className="flex items-center gap-2">
+              <Button type="submit" className={`flex items-center gap-2 ${isMobile ? 'w-full' : ''}`}>
                 <UserPlus size={16} />
                 Inviter
               </Button>
@@ -345,7 +347,7 @@ function SettingsChannel() {
         
         <div className="space-y-2">
           {members.map((member) => (
-            <div key={member.uniqueid} className="flex items-center justify-between p-3 rounded-lg border hover:bg-gray-50">
+            <div key={member.uniqueid} className={`${isMobile ? 'flex flex-col gap-2 p-3' : 'flex items-center justify-between p-3'} rounded-lg border hover:bg-gray-50`}>
               <div className="flex items-center gap-3">
                 <div className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium">
                   {member.username.charAt(0).toUpperCase()}
@@ -358,8 +360,8 @@ function SettingsChannel() {
                 </div>
               </div>
               
-              <div className="flex items-center gap-2">
-                {member.role === 'admin' && member.uniqueid !== channel.created_by && (
+              <div className={`flex ${isMobile ? 'justify-end' : ''} items-center gap-2`}>
+                {member.role === 'admin' && member.uniqueid !== channel.created_by && (!isMobile || !showMemberActions[member.uniqueid]) && (
                   <div className="flex items-center gap-1 text-blue-600 bg-blue-50 px-2 py-1 rounded-full text-xs">
                     <Shield size={12} />
                     Admin
@@ -384,7 +386,7 @@ function SettingsChannel() {
                         <Settings size={16} />
                       </button>
                     ) : (
-                      <div className="flex items-center gap-2">
+                      <div className={`flex items-center ${isMobile ? 'flex-wrap justify-end' : ''} gap-2`}>
                         {isOwner && (
                           <Button 
                             variant="outline" 
@@ -427,7 +429,7 @@ function SettingsChannel() {
             <div className="mb-6">
               <h3 className="text-lg font-medium mb-2">Quitter le salon</h3>
               <p className="text-sm text-gray-500 mb-4">Vous ne serez plus membre de ce salon et n'aurez plus accès aux messages.</p>
-              <Button variant="destructive" onClick={handleLeaveChannel}>
+              <Button variant="destructive" className={isMobile ? 'w-full' : ''} onClick={handleLeaveChannel}>
                 <LogOut className="mr-2 h-4 w-4" /> Quitter le salon
               </Button>
             </div>
@@ -437,7 +439,7 @@ function SettingsChannel() {
             <div className="mb-6">
               <h3 className="text-lg font-medium mb-2 text-red-600">Zone dangereuse</h3>
               <p className="text-sm text-gray-500 mb-4">La suppression d'un salon est définitive. Tous les messages seront perdus.</p>
-              <Button variant="destructive" onClick={() => setShowDeleteDialog(true)}>
+              <Button variant="destructive" onClick={() => setShowDeleteDialog(true)} className={isMobile ? 'w-full' : ''}>
                 <Trash2 className="mr-2 h-4 w-4" /> Supprimer le salon
               </Button>
             </div>

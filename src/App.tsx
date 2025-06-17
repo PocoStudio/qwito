@@ -21,6 +21,9 @@ import InvitationsList from './pages/panel/invitations/InvitationsList';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { PublicRoute } from './components/auth/PublicRoute';
 
+// Import de la bannière de développement
+import { BannerDev } from './components/banner-dev';
+
 import { useAuth } from './hooks/useAuth';
 
 function App() {
@@ -28,6 +31,8 @@ function App() {
 
   return (
     <Router>
+      <BannerDev />
+      
       <Routes>
         {/* Routes publiques - accessibles uniquement si NON connecté */}
         <Route element={<PublicRoute />}>

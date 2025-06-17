@@ -83,7 +83,7 @@ interface Channel {
 function PanelLayoutContent() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { state } = useSidebar();
+  const { state, setOpenMobile, isMobile } = useSidebar();
   const { user } = useAuth(); // Nous gardons cette référence pour les données utilisateur
   const [channels, setChannels] = useState<Channel[]>([]);
   const [_loadingChannels, setLoadingChannels] = useState(true);
@@ -160,6 +160,14 @@ function PanelLayoutContent() {
     // Rediriger vers la page de connexion
     navigate("/login");
   };
+  
+  // Fonction pour naviguer et fermer la sidebar sur mobile
+  const navigateAndCloseSidebar = (path: string) => {
+    navigate(path);
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
 
   // Classes conditionnelles basées sur l'état de la sidebar
   const isCollapsed = state === "collapsed";
@@ -216,8 +224,8 @@ function PanelLayoutContent() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-                  side="right"
-                  align="end"
+                  side={isMobile ? "bottom" : "right"}
+                  align={isMobile ? "start" : "end"}
                   sideOffset={4}
                 >
                   <DropdownMenuLabel className="p-0 font-normal">
@@ -245,7 +253,7 @@ function PanelLayoutContent() {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    <DropdownMenuItem onClick={() => navigate("/panel/settings")}>
+                    <DropdownMenuItem onClick={() => navigateAndCloseSidebar("/panel/settings")}>
                       <BadgeCheck />
                       Mon compte
                     </DropdownMenuItem>
@@ -274,7 +282,7 @@ function PanelLayoutContent() {
                   <SidebarMenuButton 
                     asChild 
                     tooltip="Salons"
-                    onClick={() => navigate("/panel/channels")}
+                    onClick={() => navigateAndCloseSidebar("/panel/channels")}
                     className="gap-3"
                   >
                     <div className="flex items-center">
@@ -298,7 +306,7 @@ function PanelLayoutContent() {
                           >
                           <div 
                             className="cursor-pointer w-full"
-                            onClick={() => navigate(channel.url)}
+                            onClick={() => navigateAndCloseSidebar(channel.url)}
                           >
                             <span className={textTransitionClass}># {channel.name}</span>
                           </div>
@@ -309,7 +317,7 @@ function PanelLayoutContent() {
                         <SidebarMenuSubButton asChild>
                           <div 
                             className="cursor-pointer w-full text-muted-foreground hover:text-foreground"
-                            onClick={() => navigate("/panel/channels/new")}
+                            onClick={() => navigateAndCloseSidebar("/panel/channels/new")}
                           >
                             <span className={textTransitionClass}>+ Créer un salon</span>
                           </div>
@@ -333,7 +341,7 @@ function PanelLayoutContent() {
                   asChild 
                   tooltip="Paramètres"
                   className={`gap-3 ${isSettingsActive ? "bg-accent" : ""}`}
-                  onClick={() => navigate("/panel/settings")}
+                  onClick={() => navigateAndCloseSidebar("/panel/settings")}
                 >
                   <div className="flex items-center">
                     <Settings />
@@ -346,7 +354,7 @@ function PanelLayoutContent() {
                   asChild 
                   tooltip="Invitations"
                   className={`gap-3 ${isInvitationsActive ? "bg-accent" : ""}`}
-                  onClick={() => navigate("/panel/invitations")}
+                  onClick={() => navigateAndCloseSidebar("/panel/invitations")}
                 >
                   <div className="flex items-center">
                     <Bell />
@@ -369,7 +377,7 @@ function PanelLayoutContent() {
               <SidebarMenuButton 
                 asChild 
                 tooltip="Membres"
-                onClick={() => navigate("/panel/members")}
+                onClick={() => navigateAndCloseSidebar("/panel/members")}
                 className="gap-3"
               >
                 <div className="flex items-center">
@@ -390,7 +398,7 @@ function PanelLayoutContent() {
         </div>
         
         {/* Contenu principal */}
-        <main className="flex-1 overflow-auto p-6">
+        <main className={`${isMobile ? 'flex-1 overflow-auto p-1' : 'flex-1 overflow-auto p-6'}`}>
           <div className="mx-auto max-w-6xl">
             <Outlet />
           </div>

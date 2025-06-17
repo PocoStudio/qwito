@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { MessageSquare, PlusCircle } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { getUserChannels } from "@/services/channelService";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Channel {
   id: string;
@@ -22,7 +23,8 @@ function ChannelsHome() {
   const [channels, setChannels] = useState<Channel[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  
+  const isMobile = useIsMobile();
+
   useEffect(() => {
     const fetchChannels = async () => {
       try {
@@ -50,7 +52,7 @@ function ChannelsHome() {
   }
   
   return (
-    <div className="space-y-6">
+    <div className={`${isMobile ? 'space-y-6 p-5' : 'space-y-6'}`}>
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Salons de discussion</h1>

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { X } from "lucide-react";
 import { createChannel, inviteUserToChannel } from "@/services/channelService";
 import { checkUsernameAvailability } from "@/services/userService";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 function NewChannel() {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ function NewChannel() {
     name: "",
     description: ""
   });
-  
+  const isMobile = useIsMobile();
   const [userInput, setUserInput] = useState("");
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -154,7 +155,7 @@ function NewChannel() {
   };
   
   return (
-    <div className="space-y-6">
+    <div className={`${isMobile ? 'space-y-6 p-5' : 'space-y-6'}`}>
       <div>
         <h1 className="text-3xl font-bold">Créer un nouveau salon</h1>
         <p className="text-muted-foreground mt-2">Définissez les informations de votre nouveau salon de discussion</p>
