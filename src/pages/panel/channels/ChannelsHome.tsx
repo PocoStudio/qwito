@@ -52,7 +52,7 @@ function ChannelsHome() {
   }
   
   return (
-    <div className={`${isMobile ? 'space-y-6 p-5' : 'space-y-6'}`}>
+    <div className={`${isMobile ? 'space-y-6 p-6' : 'space-y-6'}`}>
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Salons de discussion</h1>
@@ -87,7 +87,9 @@ function ChannelsHome() {
             >
               <div className="flex items-center gap-2">
                 <MessageSquare className="h-5 w-5" />
-                <h3 className="text-lg font-semibold">#{channel.name}</h3>
+                <h3 className="text-lg font-semibold">#{isMobile && channel.name.length > 10
+            ? `${channel.name.substring(0, 10)}...` 
+            : channel.name}</h3>
                 <div className="ml-auto text-sm text-muted-foreground">
                   {channel.member_count || 0} membres
                 </div>

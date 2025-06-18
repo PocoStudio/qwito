@@ -244,7 +244,7 @@ function SettingsChannel() {
   }
   
   return (
-    <div className={`${isMobile ? 'max-w-none mx-1' : 'max-w-4xl mx-auto'} ${isMobile ? 'p-2' : 'p-6'} space-y-8`}>
+    <div className={`${isMobile ? 'max-w-none mx-1' : 'max-w-4xl mx-auto'} ${isMobile ? 'p-1' : 'p-6'} space-y-8`}>
       <div className={`flex ${isMobile ? 'flex-col gap-3' : 'items-center justify-between'}`}>
         <h1 className="text-3xl font-bold">Paramètres du salon</h1>
         <Button variant="outline" onClick={() => navigate(`/panel/channels/${channelId}`)}>
@@ -253,8 +253,9 @@ function SettingsChannel() {
       </div>
       
       <div className="bg-white rounded-lg border p-6 shadow-sm">
-        <h2 className="text-2xl font-semibold mb-4">#{channel.name}</h2>
-        
+        <h2 className="text-2xl font-semibold mb-4">#{isMobile && channel.name.length > 10
+            ? `${channel.name.substring(0, 10)}...` 
+            : channel.name}</h2>
         {(isOwner || userRole === 'admin') ? (
           isEditingDescription ? (
             <form onSubmit={handleUpdateDescription} className="space-y-4">

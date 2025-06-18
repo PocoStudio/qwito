@@ -155,7 +155,7 @@ function NewChannel() {
   };
   
   return (
-    <div className={`${isMobile ? 'space-y-6 p-5' : 'space-y-6'}`}>
+    <div className={`${isMobile ? 'space-y-6 p-6' : 'space-y-6'}`}>
       <div>
         <h1 className="text-3xl font-bold">Créer un nouveau salon</h1>
         <p className="text-muted-foreground mt-2">Définissez les informations de votre nouveau salon de discussion</p>

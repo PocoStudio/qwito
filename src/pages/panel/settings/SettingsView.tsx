@@ -464,7 +464,7 @@ function SettingsView() {
   }
   
   return (
-    <div className="space-y-8 max-w-3xl mx-auto p-4">
+    <div className="space-y-8 max-w-3xl mx-auto p-2">
     <div>
       <h1 className="text-3xl font-bold">Paramètres</h1>
       <p className="text-muted-foreground mt-2">Gérez vos préférences et votre profil</p>

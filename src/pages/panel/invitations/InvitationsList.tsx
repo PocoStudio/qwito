@@ -60,7 +60,7 @@ function InvitationsList() {
   }
   
   return (
-    <div className={`${isMobile ? 'space-y-6 p-5' : 'space-y-6'}`}>
+    <div className={`${isMobile ? 'space-y-6 p-6' : 'space-y-6'}`}>
       <div>
         <h1 className="text-3xl font-bold">Invitations</h1>
         <p className="text-muted-foreground mt-2">Gérez vos invitations aux salons de discussion</p>

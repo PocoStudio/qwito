@@ -398,7 +398,7 @@ function PanelLayoutContent() {
         </div>
         
         {/* Contenu principal */}
-        <main className={`${isMobile ? 'flex-1 overflow-auto p-1' : 'flex-1 overflow-auto p-6'}`}>
+        <main className={`${isMobile ? 'flex-1 overflow-auto' : 'flex-1 overflow-auto p-6'}`}>
           <div className="mx-auto max-w-6xl">
             <Outlet />
           </div>

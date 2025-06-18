@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { MessageSquare, Settings, Bell } from "lucide-react";
 import { getUserInvitations } from "@/services/invitationService";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 function PanelHome() {
   const navigate = useNavigate();
   const [invitationCount, setInvitationCount] = useState(0);
   const [_loading, setLoading] = useState(true);
+  const isMobile = useIsMobile();
   
   useEffect(() => {
     const fetchInvitations = async () => {
@@ -24,7 +26,7 @@ function PanelHome() {
   }, []);
   
   return (
-    <div className="space-y-6 w-full"> {/* Ajout de w-full pour utiliser toute la largeur disponible */}
+    <div className={`${isMobile ? 'space-y-6 w-full p-6' : 'space-y-6 w-full'}`}>
       <div>
         <h1 className="text-3xl font-bold">Bienvenue dans votre espace</h1>
         <p className="text-muted-foreground mt-2">Gérez vos salons de discussion et vos paramètres</p>
