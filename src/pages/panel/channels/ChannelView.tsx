@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Send, User, Users, Settings, Smile, AlertCircle, Paperclip, XIcon, Crown } from "lucide-react";
+import { Send, User, Users, Settings, Smile, AlertCircle, Paperclip, XIcon, Crown, Copy, MoreVertical, Trash2 } from "lucide-react";
 import { getChannelDetails, getChannelMessageBatch, getChannelMessageBatchCount } from "@/services/channelService";
 import { sendMessage as sendSocketMessage, leaveChannel } from "@/services/socketService";
 import { getSocket } from "@/services/socketService";
@@ -18,7 +18,6 @@ import { checkPlatinumStatus } from "@/services/userService";
 import { apiUploadFiles } from "@/services/apiService";
 import { getFullFileUrl } from "@/utils/imageUtils";
 import { Progress } from "@/components/ui/progress";
-import { MoreVertical, Trash2 } from "lucide-react";
 import { deleteMessage as deleteSocketMessage } from "@/services/socketService";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -692,7 +691,15 @@ function ChannelView() {
                     <span className="text-xs text-muted-foreground">{message.timestamp}</span>
                   </div>
                 </div>
-                <p className="text-sm mt-1 break-words" style={{ whiteSpace: 'pre-wrap' }}>{message.content}</p>
+                <p className="text-sm mt-1 break-words overflow-x-auto" 
+                   style={{ 
+                     whiteSpace: 'pre-wrap', 
+                     overflowWrap: 'break-word', 
+                     wordBreak: 'break-word',
+                     maxWidth: '100%' 
+                   }}>
+                  {message.content}
+                </p>
                 
                 {/* Affichage des fichiers */}
                 {message.files && message.files.length > 0 && (
@@ -716,15 +723,44 @@ function ChannelView() {
                 )}
                 
                 {/* Menu de suppression - repositionné au milieu à droite et visible au survol */}
-                {message.user === user?.username && (
                   <div className="absolute right-0 top-1/2 transform -translate-y-1/2">
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <button className="p-1 rounded-full hover:bg-gray-200 transition-colors opacity-0 group-hover:opacity-100">
-                          <MoreVertical className="h-4 w-4 text-gray-500" />
-                        </button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-40 p-0">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button className="p-1 rounded-full hover:bg-gray-200 transition-colors opacity-0 group-hover:opacity-100">
+                        <MoreVertical className="h-4 w-4 text-gray-500" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-40 p-0">
+                      {/* Bouton de copie pour tous les messages */}
+                      <button 
+                        onClick={() => {
+                          // Copier le contenu du message dans le presse-papier
+                          navigator.clipboard.writeText(message.content);
+                          
+                          // Afficher une notification simple
+                          const notification = document.createElement('div');
+                          notification.className = 'fixed bottom-4 right-4 bg-green-100 border border-green-200 text-green-800 px-4 py-2 rounded-lg shadow-md z-50 flex items-center gap-2';
+                          notification.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            <span>Message copié</span>
+                          `;
+                          document.body.appendChild(notification);
+                          
+                          // Supprimer la notification après 2 secondes
+                          setTimeout(() => {
+                            if (document.body.contains(notification)) {
+                              document.body.removeChild(notification);
+                            }
+                          }, 2000);
+                        }}
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+                      >
+                        <Copy className="h-4 w-4" />
+                        Copier
+                      </button>
+                      
+                      {/* Bouton de suppression - uniquement pour les messages de l'utilisateur */}
+                      {message.user === user?.username && (
                         <button 
                           onClick={() => handleDeleteMessage(message.id)}
                           disabled={deletingMessages.includes(message.id)}
@@ -737,10 +773,10 @@ function ChannelView() {
                           )}
                           Supprimer
                         </button>
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                )}
+                      )}
+                    </PopoverContent>
+                  </Popover>
+                </div>
               </div>
             </div>
           ))

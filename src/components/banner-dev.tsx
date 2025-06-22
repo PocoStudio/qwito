@@ -27,7 +27,7 @@ export function BannerDev() {
   }
   
   const handleReportClick = () => {
-    window.location.href = "mailto:contact@capiomont.fr?subject=Signalement de bug - Qwito"
+    window.location.href = "mailto:contact@capiomont.fr?subject=Signalement de bug"
   }
   
   if (!isVisible) return null

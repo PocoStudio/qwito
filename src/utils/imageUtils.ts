@@ -72,7 +72,16 @@ export const getFullAvatarUrl = (avatarPath: string | null | undefined): string 
     return avatarPath;
   }
   
-  // Sinon, préfixer avec l'URL de base de l'API
+  // Extraire l'ID utilisateur du chemin de l'avatar
+  // Le format actuel est /uploads/avatars/userId.extension
+  const match = avatarPath.match(/\/uploads\/avatars\/([^\.]+)/);
+  if (match && match[1]) {
+    const userId = match[1];
+    // Utiliser la nouvelle route sécurisée
+    return `${import.meta.env.VITE_API_URL}/api/auth/public-avatar/${userId}`;
+  }
+  
+  // Fallback au comportement précédent si le format ne correspond pas
   return `${import.meta.env.VITE_API_URL}${avatarPath}`;
 };
 

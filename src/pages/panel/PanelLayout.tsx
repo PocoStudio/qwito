@@ -4,7 +4,7 @@ import {
   MessageSquare,
   Settings,
   Bell,
-  Users,
+  House,
   PlusCircle,
   LogOut,
   BadgeCheck,
@@ -177,13 +177,6 @@ function PanelLayoutContent() {
   const labelClass = isCollapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100 w-auto";
   const textTransitionClass = "transition-all duration-700 ease-in-out";
 
-  // Afficher un état de chargement si nécessaire
-  // if (authLoading) {
-  //   return <LoadingSpinner fullHeight text="Chargement..." />;
-  // }
-
-  // Nous pouvons supprimer la vérification de chargement d'authentification
-  // car elle est déjà gérée par le composant ProtectedRoute
   
   return (
     <div className="flex h-screen w-full bg-background">
@@ -201,7 +194,7 @@ function PanelLayoutContent() {
                   >
                     <Avatar className="h-8 w-8 rounded-lg">
                       <AvatarImage 
-                        src={userInfo.avatar ? `${import.meta.env.VITE_API_URL}${userInfo.avatar}` : ''} 
+                        src={getFullAvatarUrl(userInfo.avatar)} 
                         alt={userInfo.name} 
                       />
                       <AvatarFallback className="rounded-lg">
@@ -285,7 +278,7 @@ function PanelLayoutContent() {
                     onClick={() => navigateAndCloseSidebar("/panel/channels")}
                     className="gap-3"
                   >
-                    <div className="flex items-center">
+                    <div className="flex items-center cursor-pointer">
                       <MessageSquare />
                       <span className={`${textTransitionClass} ${labelClass}`}>Salons</span>
                     </div>
@@ -343,7 +336,7 @@ function PanelLayoutContent() {
                   className={`gap-3 ${isSettingsActive ? "bg-accent" : ""}`}
                   onClick={() => navigateAndCloseSidebar("/panel/settings")}
                 >
-                  <div className="flex items-center">
+                  <div className="flex items-center cursor-pointer">
                     <Settings />
                     <span className={`${textTransitionClass} ${labelClass}`}>Paramètres</span>
                   </div>
@@ -356,7 +349,7 @@ function PanelLayoutContent() {
                   className={`gap-3 ${isInvitationsActive ? "bg-accent" : ""}`}
                   onClick={() => navigateAndCloseSidebar("/panel/invitations")}
                 >
-                  <div className="flex items-center">
+                  <div className="flex items-center cursor-pointer">
                     <Bell />
                     <span className={`${textTransitionClass} ${labelClass}`}>Invitations</span>
                     {invitationCount > 0 && (
@@ -377,12 +370,12 @@ function PanelLayoutContent() {
               <SidebarMenuButton 
                 asChild 
                 tooltip="Membres"
-                onClick={() => navigateAndCloseSidebar("/panel/members")}
+                onClick={() => navigateAndCloseSidebar("/panel")}
                 className="gap-3"
               >
-                <div className="flex items-center">
-                  <Users />
-                  <span className={`${textTransitionClass} ${labelClass}`}>Membres</span>
+                <div className="flex items-center cursor-pointer">
+                  <House />
+                  <span className={`${textTransitionClass} ${labelClass}`}>Accueil</span>
                 </div>
               </SidebarMenuButton>
             </SidebarMenuItem>
