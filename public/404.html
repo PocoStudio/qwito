@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Talk - Redirection</title>
+  <script>
+    // Solution spécifique pour React + GitHub Pages
+    (function() {
+      // Ne pas exécuter la redirection si nous sommes déjà sur la page 404.html
+      // et que nous venons d'être redirigés (pour éviter les boucles)
+      if (sessionStorage.getItem('isRedirecting') === 'true') {
+        sessionStorage.removeItem('isRedirecting');
+        return;
+      }
+
+      // Récupérer l'URL complète actuelle
+      const location = window.location;
+      const pathname = location.pathname;
+      
+      // Si nous sommes sur la page 404.html, ne rien faire
+      if (pathname.endsWith('404.html')) {
+        return;
+      }
+      
+      // Construire l'URL pour l'application React
+      // Enlever le premier slash pour éviter les problèmes avec GitHub Pages
+      const cleanPath = pathname.replace(/^\//, '');
+      
+      // Sauvegarder tous les éléments de l'URL
+      const redirectPath = cleanPath || '';
+      const redirectSearch = location.search || '';
+      const redirectHash = location.hash || '';
+      
+      // Stocker ces informations dans sessionStorage
+      sessionStorage.setItem('redirectPath', redirectPath);
+      sessionStorage.setItem('redirectSearch', redirectSearch);
+      sessionStorage.setItem('redirectHash', redirectHash);
+      sessionStorage.setItem('isRedirecting', 'true');
+      
+      // Rediriger vers la racine de l'application React
+      // Pour GitHub Pages, nous utilisons une URL relative
+      const segmentCount = cleanPath.split('/').length;
+      const rootPath = Array(segmentCount).fill('..').join('/') || '.';
+      
+      // Rediriger vers l'index.html à la racine
+      window.location.replace(rootPath);
+    })();
+  </script>
+</head>
+<body>
+  <h1>Redirection en cours...</h1>
+  <p>Si vous n'êtes pas redirigé automatiquement, <a href="/">cliquez ici</a>.</p>
+</body>
+</html>
