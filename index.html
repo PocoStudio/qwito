@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="description" content="Application de messagerie Talk" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    <title>Talk Capiomont</title>
+    <script>
+      // Script pour gérer les redirections depuis 404.html
+      (function() {
+        // Récupérer les informations de redirection
+        const redirectPath = sessionStorage.getItem('redirectPath');
+        const redirectSearch = sessionStorage.getItem('redirectSearch');
+        const redirectHash = sessionStorage.getItem('redirectHash');
+        
+        // Si nous avons des informations de redirection
+        if (redirectPath || redirectSearch || redirectHash) {
+          // Construire l'URL complète
+          const newUrl = '/' + 
+            (redirectPath || '') + 
+            (redirectSearch || '') + 
+            (redirectHash || '');
+          
+          // Nettoyer le sessionStorage
+          sessionStorage.removeItem('redirectPath');
+          sessionStorage.removeItem('redirectSearch');
+          sessionStorage.removeItem('redirectHash');
+          sessionStorage.removeItem('isRedirecting');
+          
+          // Utiliser history.replaceState pour changer l'URL sans recharger la page
+          history.replaceState(null, null, newUrl);
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
