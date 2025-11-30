@@ -1,20 +1,6 @@
 <!doctype html>
 <html lang="fr">
   <head>
-    <script>
-    (function() {
-      const FORCE_UPDATE = 'force_v2_2024';
-      if (localStorage.getItem('force_update') !== FORCE_UPDATE) {
-        localStorage.setItem('force_update', FORCE_UPDATE);
-  
-        if ('caches' in window) {
-          caches.keys().then(names => names.forEach(n => caches.delete(n)));
-        }
-        
-        // Forcer le rechargement
-        setTimeout(() => location.reload(true), 100);
-      }
-    })();
 </script>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/logo.png" />
@@ -60,4 +46,5 @@
 
   </body>
 </html>
+
 
